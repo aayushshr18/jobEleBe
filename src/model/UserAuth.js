@@ -7,17 +7,17 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  firstLogin:{
-    type:Boolean,
-    default:true
-  },
-  password:{
+  otp:{
     type:String,
-    required:true
+  },
+  otpExpiry:{
+    type:Date
   },
   phone: { type: Number},
   profileType:{
     type:String,
+    enum:['admin','user'],
+    default:'user'
   },
   createdDate: { type: Date, default: Date.now },
 });
