@@ -12,6 +12,23 @@ exports.createJob = async (req, res) => {
   }
 };
 
+
+exports.createBulkJobs = async (req, res) => {
+  try {
+    const jobs = req.body;
+    
+    if (!Array.isArray(jobs) || jobs.some(job => !job.title || !job.company || !job.state || !job.city || !job.salary || !job.type)) {
+      return res.status(400).json({ message: "Invalid job data" });
+    }
+
+    const createdJobs = await Job.insertMany(jobs);
+    res.status(201).json({ message: `${createdJobs.length} jobs created successfully`, jobs: createdJobs });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating jobs", error: error.message });
+  }
+};
+
+
 // GET all jobs with optional search query
 exports.getAllJobs = async (req, res) => {
     try {

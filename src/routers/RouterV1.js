@@ -12,6 +12,7 @@ routerV1.delete("/user",userAuth.deleteUser);
 
 
 routerV1.post("/job", Job.createJob );
+routerV1.post("/bulkjob", Job.createBulkJobs );
 routerV1.get("/jobs", Job.getAllJobs );
 routerV1.get("/job/:id", Job.getJobById );
 routerV1.patch("/job/:id", Job.updateJob );
