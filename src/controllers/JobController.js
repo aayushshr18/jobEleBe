@@ -4,7 +4,7 @@ const Job = require("../model/Job"); // Adjust the path accordingly
 // CREATE a new job
 exports.createJob = async (req, res) => {
   try {
-    const newJob = new Job(...req.body);
+    const newJob = new Job(req.body);
     await newJob.save();
     res.status(201).json({ message: "Job created successfully", job: newJob });
   } catch (error) {
@@ -72,7 +72,7 @@ exports.getJobById = async (req, res) => {
 // UPDATE a job
 exports.updateJob = async (req, res) => {
   try {
-    const job = await Job.findByIdAndUpdate(req.params.id, {...req.body }, { new: true });
+    const job = await Job.findByIdAndUpdate(req.params.id,req.body, { new: true });
 
     if (!job) {
       return res.status(404).json({ message: "Job not found" });
