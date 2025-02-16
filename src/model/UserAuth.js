@@ -13,10 +13,13 @@ const userSchema = new mongoose.Schema({
   otpExpiry: {
     type: Date,
   },
+  pucName: { type: String },
+  pucEmail: { type: String },
+  pucPhone: { type: String },
   phone: { type: Number },
   profileType: {
     type: String,
-    enum: ["admin", "user"],
+    enum: ["admin", "user", "employer"],
     default: "user",
   },
 
@@ -42,7 +45,7 @@ const userSchema = new mongoose.Schema({
       startDate: { type: Date },
       endDate: { type: Date },
       location: { type: String },
-      description: { type: String }, 
+      description: { type: String },
     },
   ],
   education: [
@@ -51,7 +54,7 @@ const userSchema = new mongoose.Schema({
       institution: { type: String },
       startDate: { type: Date },
       endDate: { type: Date },
-      description: { type: String }, 
+      description: { type: String },
     },
   ],
   certifications: [
