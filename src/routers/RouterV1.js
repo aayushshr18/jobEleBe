@@ -5,7 +5,9 @@ const Job= require("../controllers/JobController")
 const Com= require("../controllers/ComController")
 
 
+
 //user auth
+routerV1.get("/users",userAuth.allUserDetails);
 routerV1.get("/user",userAuth.userDetails);
 routerV1.patch("/user",userAuth.updateUser);
 routerV1.delete("/user",userAuth.deleteUser);
