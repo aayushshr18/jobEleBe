@@ -176,7 +176,14 @@ exports.userDetails = async (req, res) => {
 
 exports.allUserDetails = async (req, res) => {
   try {
-    const users = await User.find()
+    const {profileType}=req.query;
+    let users;
+    if(profileType){
+      users = await User.find({profileType});
+    }else{
+      users = await User.find();
+    }
+
     res.json({
       status: true,
       data: users,
