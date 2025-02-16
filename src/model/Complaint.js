@@ -8,6 +8,7 @@ const complaintSchema = new mongoose.Schema({
   companyAdd: { type: String },
   companyPOC: { type: String },
   companyNo: { type: String },
+  remark: { type: String },
   doj: { type: Date },
   description: { type: String },
   offerLetter: { type: String },
