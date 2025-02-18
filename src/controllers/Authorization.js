@@ -234,7 +234,7 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.params.id;
   try {
     const deletedUser = await User.findByIdAndDelete(userId);
     if (deletedUser) {

@@ -31,30 +31,35 @@ exports.createBulkJobs = async (req, res) => {
 
 // GET all jobs with optional search query
 exports.getAllJobs = async (req, res) => {
-    try {
-      const { search = '' } = req.query;
-      let query = {};
-      if (search) {
-        query = {
-          $or: [
-            { title: { $regex: search, $options: 'i' } },
-            { company: { $regex: search, $options: 'i' } },
-            { state: { $regex: search, $options: 'i' } },
-            { city: { $regex: search, $options: 'i' } },
-            { salary: { $regex: search, $options: 'i' } },
-            { type: { $regex: search, $options: 'i' } },
-          ]
-        };
-      }
-      
-      const jobs = await Job.find(query).sort({ createdDate: -1 }); // Sort by creation date (latest first)
-  
-      res.status(200).json({ jobs });
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching jobs", error: error.message });
+  try {
+    // Extract query parameters
+    const { title, company, state, city, salary, type } = req.query;
+
+    let query = {};
+
+    // Check if any search parameters are provided and add them to the query
+    if (title || company || state || city || salary || type) {
+      query = {
+        $or: []
+      };
+
+      if (title) query.$or.push({ title: { $regex: title, $options: 'i' } });
+      if (company) query.$or.push({ company: { $regex: company, $options: 'i' } });
+      if (state) query.$or.push({ state: { $regex: state, $options: 'i' } });
+      if (city) query.$or.push({ city: { $regex: city, $options: 'i' } });
+      if (salary) query.$or.push({ salary: { $regex: salary, $options: 'i' } });
+      if (type) query.$or.push({ type: { $regex: type, $options: 'i' } });
     }
-  };
-  
+
+    // Fetch the jobs from the database with optional filters and sort by createdDate (latest first)
+    const jobs = await Job.find(query).sort({ createdDate: -1 });
+
+    res.status(200).json({ jobs });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching jobs", error: error.message });
+  }
+};
+ 
 
 // GET a job by ID
 exports.getJobById = async (req, res) => {
