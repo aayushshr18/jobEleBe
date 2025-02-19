@@ -3,7 +3,8 @@ const routerV1 = new express.Router();
 const userAuth = require("../controllers/Authorization");
 const Job= require("../controllers/JobController")
 const Com= require("../controllers/ComController")
-const Hire= require("../controllers/HireController")
+const Hire= require("../controllers/HireController");
+const { createOrder, verifyPayment } = require("../controllers/PayController");
 
 
 
@@ -34,6 +35,10 @@ routerV1.get("/complaints", Com.getAllComplaints );
 routerV1.get("/complaint/:id", Com.getComplaintById );
 routerV1.patch("/complaint/:id", Com.updateComplaint );
 routerV1.delete("/complaint/:id", Com.deleteComplaint );
+
+routerV1.post("/pay", createOrder );
+routerV1.post("/verify-pay", verifyPayment );
+
 
 
 
