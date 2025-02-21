@@ -18,10 +18,10 @@ exports.createOrder = async (req, res) => {
         let totalAmount;
 
         if (user.profileType === "user") {
-            totalAmount = 149 * 1.18; // ₹149 + 18% GST
+            totalAmount = 149 * 1.18*100; // ₹149 + 18% GST
         } else if (user.profileType === "employer") {
-            totalAmount = amount * 1.18; // Custom amount + 18% GST
-            if (totalAmount < 300 * 1.18) {
+            totalAmount = amount * 1.18*100; // Custom amount + 18% GST
+            if (totalAmount < 300 * 1.18*100) {
                 return res.status(400).json({ error: "Minimum recharge is ₹300 + GST" });
             }
         } else {
