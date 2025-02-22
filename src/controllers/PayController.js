@@ -59,7 +59,7 @@ exports.verifyPayment = async (req, res) => {
             user.expiry = new Date();
             user.expiry.setMonth(user.expiry.getMonth() + 1); // Extend by one month
         } else if (user.profileType === "employer") {
-            user.balance += parseInt(amount)/118; // Store only the base amount (without GST)
+            user.balance += Number(amount)/118; // Store only the base amount (without GST)
         }
 
         await user.save();
