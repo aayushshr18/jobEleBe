@@ -174,6 +174,36 @@ exports.userDetails = async (req, res) => {
 
 }
 
+exports.getPaidUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const emp=await User.findById(req.user.id);
+  
+    if(emp.profileType!=="employer" || emp.balance < 3){
+      return res.status(404).json({success: false , message: "Insufficient Balance" });  
+    }
+
+    emp.balance-=3;
+    await emp.save();
+
+    const user = await User.findById(userId).select('-password -createdDate -__v');
+    if (!user) {
+      return res.status(404).json({success: false , message: "User not found" });
+    }
+
+    res.json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Server Error",
+      status: false,
+    });
+  }
+
+}
+
 exports.allUserDetails = async (req, res) => {
   try {
     const {profileType}=req.query;

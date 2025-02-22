@@ -74,6 +74,11 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  expiry:{type: Date},
+  balance:{
+    type:Number,
+    default:0
+  },
   projects: [
     {
       projectName: { type: String },

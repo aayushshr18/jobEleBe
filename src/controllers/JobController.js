@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Job = require("../model/Job"); // Adjust the path accordingly
+const User = require("../model/UserAuth");
 
 // CREATE a new job
 exports.createJob = async (req, res) => {
@@ -36,6 +37,11 @@ exports.getAllJobs = async (req, res) => {
     const { title, company, state, city, salary, type } = req.query;
 
     let query = {};
+    const user = await User.findById(req.user.id);
+    if (user.profileType === "user" && user.expiry && new Date(user.expiry) < new Date()) {
+      return res.status(403).json({success:false, message: "Subscription expired. Please renew to access the data." });
+    }
+    
 
     // Check if any search parameters are provided and add them to the query
     if (title || company || state || city || salary || type) {
@@ -54,7 +60,7 @@ exports.getAllJobs = async (req, res) => {
     // Fetch the jobs from the database with optional filters and sort by createdDate (latest first)
     const jobs = await Job.find(query).sort({ createdDate: -1 });
 
-    res.status(200).json({ jobs });
+    res.status(200).json({success:true, jobs });
   } catch (error) {
     res.status(500).json({ message: "Error fetching jobs", error: error.message });
   }
