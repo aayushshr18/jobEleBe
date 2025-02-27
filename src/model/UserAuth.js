@@ -88,6 +88,10 @@ const userSchema = new mongoose.Schema({
       endDate: { type: Date },
     },
   ],
+  viewedUsers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   createdDate: { type: Date, default: Date.now },
 });
 

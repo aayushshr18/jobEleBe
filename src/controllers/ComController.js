@@ -1,4 +1,16 @@
 const Complaint = require("../model/Complaint"); // Adjust the path accordingly
+const nodemailer = require("nodemailer");
+
+// Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.SENDER_EMAIL,
+    pass: process.env.APPS_PASSWORD,
+  },
+});
 
 // CREATE a new complaint
 exports.createComplaint = async (req, res) => {
@@ -57,20 +69,56 @@ exports.getComplaintById = async (req, res) => {
 // UPDATE a complaint
 exports.updateComplaint = async (req, res) => {
   try {
+    const { id } = req.params;
+    const { remarks } = req.body;
+
+    // Update complaint
     const complaint = await Complaint.findByIdAndUpdate(
-      req.params.id,
-      {...req.body},
+      id,
+      { ...req.body },
       { new: true }
     );
 
     if (!complaint) {
       return res.status(404).json({ message: "Complaint not found" });
     }
-    res.status(200).json({ message: "Complaint updated successfully", complaint });
+
+    // If remarks are provided, send email to the user
+    if (remarks) {
+      const user = await User.findById(complaint.userId); // Assuming the complaint has a userId
+
+      if (user) {
+        const mailOptions = {
+          from: process.env.SENDER_EMAIL,
+          to: user.email,
+          subject: "Complaint Updated - Remarks",
+          html: `
+            <p>Dear ${user.name},</p>
+            <p>Your complaint with ID <strong>${complaint._id}</strong> has been updated. Below are the remarks:</p>
+            <p><strong>Remarks:</strong></p>
+            <p>${remarks}</p>
+            <p>Thank you for your patience!</p>
+            <p>Best regards,</p>
+            <p>The Support Team</p>
+          `,
+        };
+
+        await transporter.sendMail(mailOptions);
+      }
+    }
+
+    res.status(200).json({
+      message: "Complaint updated successfully",
+      complaint,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error updating complaint", error: error.message });
+    res.status(500).json({
+      message: "Error updating complaint",
+      error: error.message,
+    });
   }
 };
+
 
 // DELETE a complaint
 exports.deleteComplaint = async (req, res) => {

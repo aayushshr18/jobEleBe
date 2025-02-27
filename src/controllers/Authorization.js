@@ -177,18 +177,22 @@ exports.userDetails = async (req, res) => {
 exports.getPaidUser = async (req, res) => {
   try {
     const userId = req.params.id;
-    const emp=await User.findById(req.user.id);
-  
-    if(emp.profileType!=="employer" || emp.balance < 3){
-      return res.status(404).json({success: false , message: "Insufficient Balance" });  
+    const emp = await User.findById(req.user.id);
+
+    if (emp.profileType !== "employer" || emp.balance < 3) {
+      return res.status(404).json({ success: false, message: "Insufficient Balance" });
     }
 
-    emp.balance-=3;
+    emp.balance -= 3;
+    if (!emp.viewedUsers.includes(userId)) {
+      emp.viewedUsers.push(userId);
+    }
+
     await emp.save();
 
     const user = await User.findById(userId).select('-password -createdDate -__v');
     if (!user) {
-      return res.status(404).json({success: false , message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     res.json({
@@ -201,8 +205,7 @@ exports.getPaidUser = async (req, res) => {
       status: false,
     });
   }
-
-}
+};
 
 exports.allUserDetails = async (req, res) => {
   try {
@@ -227,7 +230,23 @@ exports.allUserDetails = async (req, res) => {
 
 }
 
+exports.empUserDetails = async (req, res) => {
+  try {
+    const emp = await User.findById(req.user.id);
+    const users = await User.find({ profileType:"user", _id: { $nin: emp.viewedUsers } });
 
+    res.json({
+      status: true,
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Server Error",
+      status: false,
+    });
+  }
+
+}
 
 exports.updateUser = async (req, res) => {
   try {
@@ -280,3 +299,25 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+exports.bulkCreateUsers = async (req, res) => {
+  try {
+    const usersData = req.body;
+
+    if (!Array.isArray(usersData) || usersData.length === 0) {
+      return res.status(400).json({ message: "Please provide a valid array of users." });
+    }
+
+    const createdUsers = await User.insertMany(usersData);
+
+    res.status(201).json({
+      message: "Users created successfully",
+      data: createdUsers,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error creating users",
+      error: error.message,
+    });
+  }
+};

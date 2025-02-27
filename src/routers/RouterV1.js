@@ -11,6 +11,8 @@ const { createOrder, verifyPayment } = require("../controllers/PayController");
 //user auth
 routerV1.get("/users",userAuth.allUserDetails);
 routerV1.get("/user",userAuth.userDetails);
+routerV1.post("/bulkuser",userAuth.bulkCreateUsers);
+routerV1.get("/userbyemp",userAuth.empUserDetails);
 routerV1.patch("/user",userAuth.updateUser);
 routerV1.delete("/user/:id",userAuth.deleteUser);
 routerV1.get("/user/:id",userAuth.getPaidUser);
