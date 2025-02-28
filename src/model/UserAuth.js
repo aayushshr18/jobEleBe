@@ -13,6 +13,12 @@ const userSchema = new mongoose.Schema({
   otpExpiry: {
     type: Date,
   },
+  gst:{
+    type: String
+  },
+  companyId:{
+    type:String
+  },
   pucName: { type: String },
   pucEmail: { type: String },
   pucPhone: { type: String },
