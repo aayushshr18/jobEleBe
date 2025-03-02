@@ -1,5 +1,6 @@
 const Complaint = require("../model/Complaint"); // Adjust the path accordingly
 const nodemailer = require("nodemailer");
+const User = require("../model/UserAuth"); // Adjust the path accordingly
 
 // Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -70,7 +71,7 @@ exports.getComplaintById = async (req, res) => {
 exports.updateComplaint = async (req, res) => {
   try {
     const { id } = req.params;
-    const { remarks } = req.body;
+    const { remark } = req.body;
 
     // Update complaint
     const complaint = await Complaint.findByIdAndUpdate(
@@ -84,8 +85,8 @@ exports.updateComplaint = async (req, res) => {
     }
 
     // If remarks are provided, send email to the user
-    if (remarks) {
-      const user = await User.findById(complaint.userId); // Assuming the complaint has a userId
+    if (remark) {
+      const user = await User.findOne({email:complaint.email}); // Assuming the complaint has a userId
 
       if (user) {
         const mailOptions = {
@@ -93,13 +94,14 @@ exports.updateComplaint = async (req, res) => {
           to: user.email,
           subject: "Complaint Updated - Remarks",
           html: `
-            <p>Dear ${user.name},</p>
+            <p>Dear ${user.name||"User"},</p>
             <p>Your complaint with ID <strong>${complaint._id}</strong> has been updated. Below are the remarks:</p>
             <p><strong>Remarks:</strong></p>
-            <p>${remarks}</p>
+            <p>${remark}</p>
             <p>Thank you for your patience!</p>
             <p>Best regards,</p>
-            <p>The Support Team</p>
+            <p>Support Team</p>
+            <p>Job Elevator - Advertrone</p>
           `,
         };
 
