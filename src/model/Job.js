@@ -7,6 +7,7 @@ const jobSchema = new mongoose.Schema({
   city: { type: String },
   salary: { type: String },
   type: { type: String },
+  numOfVacancy: { type: Number },
   createdDate: { type: Date, default: Date.now },
 });
 
