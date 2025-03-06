@@ -12,6 +12,7 @@ const hiremeSchema = new mongoose.Schema({
   companyNo: { type: String },
   doj: { type: Date },
   salary:{type:String},
+  numOfVacancy: { type: Number },
   description: { type: String },
   createdDate: { type: Date, default: Date.now },
 });
