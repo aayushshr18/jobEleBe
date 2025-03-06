@@ -79,7 +79,7 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
-  expiry:{type: Date},
+  expiry:{type: Date, default: Date.now  },
   balance:{
     type:Number,
     default:0
