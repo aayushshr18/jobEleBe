@@ -8,6 +8,7 @@ const jobSchema = new mongoose.Schema({
   salary: { type: String },
   type: { type: String },
   numOfVacancy: { type: Number },
+  phone:{type:String},
   createdDate: { type: Date, default: Date.now },
 });
 
