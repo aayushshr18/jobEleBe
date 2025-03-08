@@ -156,7 +156,10 @@ exports.verifyOtp = async (req, res) => {
 
 exports.userDetails = async (req, res) => {
   try {
-    const userId = req.user.id;
+    let userId = req.user.id;
+    if(req.query.id){
+      userId=req.query.id;
+    }
     const user = await User.findById(userId)
     .select('-password -createdDate -__v') // Exclude sensitive fields
     .populate('viewedUsers', '-password -createdDate -__v');
