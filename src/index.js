@@ -19,12 +19,15 @@ app.use(
 );
 
 app.use('/proxy', createProxyMiddleware({
-  target: 'https://www.mindluster.com/',  
-  changeOrigin: true,             
-  pathRewrite: {
-      '^/': '',             
-  },
+  target: 'https://www.mindluster.com/', 
+  changeOrigin: true, 
+  pathRewrite: { '^/': '' },
+  onProxyRes: (proxyRes, req, res) => {
+    proxyRes.headers['X-Frame-Options'] = 'ALLOW-FROM https://yourwebsite.com';  // Allow iframe on your website
+    proxyRes.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://yourwebsite.com"; // Allow iframe embedding on your domain
+  }
 }));
+
 
 app.use("/auth/v1/", authV1);
 app.use("/auth/v1/",auth,routerV1);
