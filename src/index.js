@@ -6,7 +6,7 @@ const cors = require("cors");
 const {auth}= require("./middleware/index.js");
 const routerV1=require("./routers/RouterV1.js");
 const authV1=require("./routers/AuthRouter.js");
-
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 
 require("./db/index.js");
@@ -17,6 +17,14 @@ app.use(
     origin: "*",
   })
 );
+
+app.use('/proxy', createProxyMiddleware({
+  target: 'https://www.mindluster.com/',  
+  changeOrigin: true,             
+  pathRewrite: {
+      '^/': '',             
+  },
+}));
 
 app.use("/auth/v1/", authV1);
 app.use("/auth/v1/",auth,routerV1);
