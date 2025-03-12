@@ -238,21 +238,38 @@ exports.allUserDetails = async (req, res) => {
 
 exports.empUserDetails = async (req, res) => {
   try {
+    const { name, location, skills } = req.query;
     const emp = await User.findById(req.user.id);
-    const users = await User.find({ profileType:"user", _id: { $nin: emp.viewedUsers } });
+    let filter = { profileType: "user", _id: { $nin: emp.viewedUsers } };
+
+    if (name) {
+      filter.fullName = { $regex: name, $options: "i" }; 
+    }
+
+    if (location) {
+        filter["location.city"] = { $regex: location, $options: "i" }; 
+        filter["location.state"] = { $regex: location, $options: "i" }; 
+    }
+
+    if (skills) {
+      filter["skills.skillName"] = { $regex: skills, $options: "i" };
+    }
+
+    const users = await User.find(filter);
 
     res.json({
       status: true,
       data: users,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       message: "Internal Server Error",
       status: false,
     });
   }
+};
 
-}
 
 exports.updateUser = async (req, res) => {
   try {
